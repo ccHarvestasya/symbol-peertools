@@ -9,7 +9,7 @@ log4js.configure({
       filename: 'rest.log',
       keepFileExt: true,
       layout: { type: 'basic' },
-      pattern: '.yyyyMMdd',
+      pattern: 'yyyyMMdd',
       type: 'file',
     },
     stdout: { type: 'stdout' },
