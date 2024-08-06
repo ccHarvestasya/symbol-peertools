@@ -7,12 +7,6 @@
     "strict": true,
     "target": "es2022",
     "moduleResolution": "node16",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
     "plugins": [
       {
         "transform": "typescript-transform-paths"

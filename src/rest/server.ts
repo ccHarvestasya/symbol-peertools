@@ -1,8 +1,8 @@
-import { Catpult } from '@/catapult/Catpult.js'
-import { Logger } from '@/logger.js'
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { join } from 'node:path'
+import { Catpult } from '../catapult/Catpult.js'
+import { Logger } from '../logger.js'
 
 /** ロガー */
 const logger = new Logger('rest')

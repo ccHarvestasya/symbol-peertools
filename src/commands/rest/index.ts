@@ -2,6 +2,7 @@ import { Args, Command, Flags } from '@oclif/core'
 import { exec } from 'node:child_process'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { Logger } from '../../logger.js'
 
 export default class Rest extends Command {
   static args = {
@@ -25,9 +26,10 @@ export default class Rest extends Command {
 
     const __filename = fileURLToPath(import.meta.url)
     const __dirname = dirname(dirname(dirname(dirname(__filename))))
-    const isWin = process.platform === 'win32'
-    const restserverSh = isWin ? join(__dirname, 'sh/restserver.ps1') : join(__dirname, 'sh/restserver.sh')
+    const restserverSh = join(__dirname, 'sh/restserver.sh')
 
+    const logger = new Logger('rest')
+    logger.info(`${restserverSh} ${args.cmd} ${flags.port}`)
     exec(`${restserverSh} ${args.cmd} ${flags.port}`)
   }
 }
