@@ -16,7 +16,7 @@ log4js.configure({
   },
   categories: {
     default: { appenders: ['stdout'], level: 'all' },
-    rest: { appenders: ['stdout', 'rest'], level: 'all' },
+    rest: { appenders: ['rest', 'stdout'], level: 'all' },
   },
 })
 
@@ -29,32 +29,34 @@ export class Logger {
   }
 
   debug(msg: string) {
-    console.log(msg)
     this.logger_.debug(msg)
   }
 
   error(msg: string) {
-    console.log(msg)
     this.logger_.error(msg)
   }
 
   fatal(msg: string) {
-    console.log(msg)
     this.logger_.fatal(msg)
   }
 
   info(msg: string) {
-    console.log(msg)
     this.logger_.info(msg)
   }
 
   trace(msg: string) {
-    console.log(msg)
     this.logger_.trace(msg)
   }
 
   warn(msg: string) {
-    console.log(msg)
     this.logger_.warn(msg)
+  }
+
+  shutdown(exitCode: string | number | undefined) {
+    process.exitCode = exitCode
+    log4js.shutdown(() => {
+      console.log('### this is printed')
+      process.on('exit', () => process.exit(exitCode))
+    })
   }
 }

@@ -14,17 +14,15 @@ const args = process.argv.slice(2)
 // コマンド
 const command = args[0]
 if (command !== 'start' && command !== 'stop') {
-  const msg = 'unknown command.'
-  logger.error(msg)
-  throw new Error(msg)
+  logger.error('unknown command.')
+  logger.shutdown(-1)
 }
 
 // ポート
 const port = args[1] ?? '3000'
-if (Number.isNaN(port)) {
-  const msg = 'port is not numeric.'
-  logger.error(msg)
-  throw new TypeError(msg)
+if (isNaN(Number(port))) {
+  logger.error('port is not numeric.')
+  logger.shutdown(-1)
 }
 
 /** ファイルパス */
@@ -32,7 +30,13 @@ const wkDir = process.cwd()
 const pidFilePath = join(wkDir, 'rest.pid')
 
 /** Catapult */
-const catpult = new Catpult('sakia.harvestasya.com')
+let catapult: Catpult
+try {
+  catapult = new Catpult('sakia.harvestasya.com')
+} catch (e) {
+  logger.fatal(e as string)
+  logger.shutdown(-1)
+}
 
 /** サーバ設定 */
 const server = createServer(async (request, response) => {
@@ -40,7 +44,7 @@ const server = createServer(async (request, response) => {
 
   if (request.url === '/chain/info') {
     logger.info(`${ip} 200 ${request.url}`)
-    const result = await catpult.getChainInfo()
+    const result = await catapult.getChainInfo()
     if (result === undefined) {
       response.writeHead(500, { 'Content-Type': 'application/json' })
       response.end(`{"code":"ServerError","message":"Internal Server Error"}`)
@@ -50,7 +54,7 @@ const server = createServer(async (request, response) => {
     }
   } else if (request.url === '/node/info') {
     logger.info(`${ip} 200 ${request.url}`)
-    const result = await catpult.getNodeInfo()
+    const result = await catapult.getNodeInfo()
     if (result === undefined) {
       response.writeHead(500, { 'Content-Type': 'application/json' })
       response.end(`{"code":"ServerError","message":"Internal Server Error"}`)
@@ -60,7 +64,7 @@ const server = createServer(async (request, response) => {
     }
   } else if (request.url === '/node/peers') {
     logger.info(`${ip} 200 ${request.url}`)
-    const result = await catpult.getNodePeers()
+    const result = await catapult.getNodePeers()
     if (result === undefined) {
       response.writeHead(500, { 'Content-Type': 'application/json' })
       response.end(`{"code":"ServerError","message":"Internal Server Error"}`)
@@ -70,7 +74,7 @@ const server = createServer(async (request, response) => {
     }
   } else if (request.url === '/node/unlockedaccount') {
     logger.info(`${ip} 200 ${request.url}`)
-    const result = await catpult.getNodeUnlockedAccount()
+    const result = await catapult.getNodeUnlockedAccount()
     if (result === undefined) {
       response.writeHead(500, { 'Content-Type': 'application/json' })
       response.end(`{"code":"ServerError","message":"Internal Server Error"}`)
@@ -80,7 +84,7 @@ const server = createServer(async (request, response) => {
     }
   } else if (request.url === '/node/time') {
     logger.info(`${ip} 200 ${request.url}`)
-    const result = await catpult.getNodeTime()
+    const result = await catapult.getNodeTime()
     if (result === undefined) {
       response.writeHead(500, { 'Content-Type': 'application/json' })
       response.end(`{"code":"ServerError","message":"Internal Server Error"}`)
@@ -90,7 +94,7 @@ const server = createServer(async (request, response) => {
     }
   } else if (request.url === '/node/diagnosticcounters') {
     logger.info(`${ip} 200 ${request.url}`)
-    const result = await catpult.getDiagnosticCounters()
+    const result = await catapult.getDiagnosticCounters()
     if (result === undefined) {
       response.writeHead(500, { 'Content-Type': 'application/json' })
       response.end(`{"code":"ServerError","message":"Internal Server Error"}`)
@@ -116,7 +120,12 @@ if (command === 'start') {
   } else {
     writeFileSync(pidFilePath, process.pid.toString())
     logger.info('REST server started.')
-    server.listen(port)
+    try {
+      server.listen(port)
+    } catch (e) {
+      logger.fatal(e as string)
+      logger.shutdown(-1)
+    }
   }
 } else if (command === 'stop') {
   if (existsSync(pidFilePath)) {
