@@ -9,7 +9,7 @@ import { NodeUnlockedAccount } from './NodeUnlockedAccount.js'
 import { PacketBuffer } from './PacketBuffer.js'
 import { SslSocket } from './SslSocket.js'
 
-export class Catpult extends SslSocket {
+export class Catapult extends SslSocket {
   /** パケットタイプ */
   private PacketType = {
     CHAIN_STATISTICS: 5,

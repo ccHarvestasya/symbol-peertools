@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { join } from 'node:path'
-import { Catpult } from '../catapult/Catpult.js'
+import { Catapult } from '../catapult/Catapult.js'
 import { Logger } from '../logger.js'
 
 /** ロガー */
@@ -30,9 +30,9 @@ const wkDir = process.cwd()
 const pidFilePath = join(wkDir, 'rest.pid')
 
 /** Catapult */
-let catapult: Catpult
+let catapult: Catapult
 try {
-  catapult = new Catpult('sakia.harvestasya.com')
+  catapult = new Catapult('sakia.harvestasya.com')
 } catch (e) {
   logger.fatal(e as string)
   logger.shutdown(-1)
