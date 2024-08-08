@@ -2,7 +2,6 @@ import { Args, Command, Flags } from '@oclif/core'
 import { exec } from 'node:child_process'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Logger } from '../../logger.js'
 
 export default class Rest extends Command {
   static args = {
