@@ -6,10 +6,12 @@
   "bin": "./bin/run.js",
   "bugs": "https://github.com/ccHarvestasya/symbol-peertools/issues",
   "dependencies": {
+    "@inquirer/prompts": "^5.3.8",
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
     "@oclif/plugin-plugins": "^5",
     "log4js": "^6.9.1",
+    "simple-symbol-node-cert": "^1.0.5",
     "tsx": "^4.16.5"
   },
   "devDependencies": {
