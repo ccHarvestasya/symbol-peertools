@@ -87,13 +87,13 @@ export class Catapult extends SslSocket {
       const host = nodeBufferView.readString(hostLength)
       const friendlyName = nodeBufferView.readString(friendlyNameLength)
       // 証明書有効期限、ノード公開鍵取得
-      const nodePublicKey = this._x509Certificate!.publicKey.export({
+      const nodePublicKey = this.x509Certificate_!.publicKey.export({
         format: 'der',
         type: 'spki',
       })
         .toString('hex', 12, 44)
         .toUpperCase()
-      const validTo = this._x509Certificate!.validTo
+      const validTo = this.x509Certificate_!.validTo
       const validToDate = new Date(validTo)
       const certificateExpirationDate = validToDate
       nodeInfo = new NodeInfo(
