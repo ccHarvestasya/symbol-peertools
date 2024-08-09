@@ -4,11 +4,11 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 export default class Rest extends Command {
+  static description = 'REST for peer node.'
+
   static args = {
     cmd: Args.string({ description: 'REST Server Start or Stop', required: true }),
   }
-
-  static description = 'REST for Peer Node'
 
   static examples = [
     `<%= config.bin %> <%= command.id %> start`,
