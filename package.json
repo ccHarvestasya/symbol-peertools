@@ -9,7 +9,6 @@
     "@inquirer/prompts": "^5.3.8",
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
-    "@oclif/plugin-plugins": "^5",
     "figlet": "^1.7.0",
     "log4js": "^6.9.1",
     "simple-symbol-node-cert": "^1.0.5",
@@ -55,15 +54,8 @@
     "dirname": "symbol-peertools",
     "commands": "./dist/commands",
     "plugins": [
-      "@oclif/plugin-help",
-      "@oclif/plugin-plugins"
+      "@oclif/plugin-help"
     ],
-    "topicSeparator": " ",
-    "topics": {
-      "hello": {
-        "description": "Say hello to the world and others"
-      }
-    },
     "helpClass": "./dist/help"
   },
   "repository": "ccHarvestasya/symbol-peertools",
