@@ -3,7 +3,7 @@ import { Command, Flags } from '@oclif/core'
 import { SimpleSymbolNodeCert } from 'simple-symbol-node-cert'
 
 export default class Generate extends Command {
-  static description = 'Create Symbol node certificate.'
+  static description = 'Generate Symbol node certificate.'
 
   static examples = [`<%= config.bin %> <%= command.id %> --caname "Test CA" --nodename "Test Node"`]
 

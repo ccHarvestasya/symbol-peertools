@@ -2,7 +2,7 @@ import { Command, Flags } from '@oclif/core'
 import { SimpleSymbolNodeCert } from 'simple-symbol-node-cert'
 
 export default class Generate extends Command {
-  static description = 'See Symbol node certificate information.'
+  static description = 'Display Symbol node certificate information.'
 
   static examples = [`<%= config.bin %> <%= command.id %>`]
 
