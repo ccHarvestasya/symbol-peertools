@@ -9,7 +9,7 @@ export default class Wizard extends Command {
   static examples = [`<%= config.bin %> <%= command.id %> wizard`]
 
   async run(): Promise<void> {
-    const certDirPath = await input({ message: 'Certificate output directory: ', default: './cert' })
+    const certDirPath = './cert'
     let isOverwrite = false
     if (existsSync(certDirPath)) {
       isOverwrite = await confirm({
