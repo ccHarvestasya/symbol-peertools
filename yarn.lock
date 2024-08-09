@@ -2350,6 +2350,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/figlet@npm:^1":
+  version: 1.5.8
+  resolution: "@types/figlet@npm:1.5.8"
+  checksum: 10c0/b61385ca7d7c7716a7ee63d421b24d851fbe9ea43e67a746e0f90212fa6502fe9e34bf5b5e6761c363b828cd87eb953fc55b2f48bfe2801c309e0077230474c3
+  languageName: node
+  linkType: hard
+
 "@types/http-cache-semantics@npm:^4.0.2":
   version: 4.0.4
   resolution: "@types/http-cache-semantics@npm:4.0.4"
@@ -4380,6 +4387,15 @@ __metadata:
   dependencies:
     reusify: "npm:^1.0.4"
   checksum: 10c0/1095f16cea45fb3beff558bb3afa74ca7a9250f5a670b65db7ed585f92b4b48381445cd328b3d87323da81e43232b5d5978a8201bde84e0cd514310f1ea6da34
+  languageName: node
+  linkType: hard
+
+"figlet@npm:^1.7.0":
+  version: 1.7.0
+  resolution: "figlet@npm:1.7.0"
+  bin:
+    figlet: bin/index.js
+  checksum: 10c0/bedd97fe5fa604002ae8c6bc0b08dea6f9701e0b268f42e601668956f50ff377ef592e24e182a6174a775abde9e2aa77697e324b8681619ae23bc85078439393
   languageName: node
   linkType: hard
 
@@ -7655,6 +7671,7 @@ __metadata:
     "@oclif/prettier-config": "npm:^0.2.1"
     "@oclif/test": "npm:^4"
     "@types/chai": "npm:^4"
+    "@types/figlet": "npm:^1"
     "@types/mocha": "npm:^10"
     "@types/node": "npm:^22.1.0"
     chai: "npm:^4"
@@ -7662,6 +7679,7 @@ __metadata:
     eslint-config-oclif: "npm:^5"
     eslint-config-oclif-typescript: "npm:^3"
     eslint-config-prettier: "npm:^9"
+    figlet: "npm:^1.7.0"
     log4js: "npm:^6.9.1"
     mocha: "npm:^10"
     oclif: "npm:^4"
