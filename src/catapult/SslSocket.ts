@@ -7,10 +7,10 @@ import tls, { ConnectionOptions } from 'tls'
  */
 export abstract class SslSocket {
   /** コネクションオプション */
-  private connectionOptions_: ConnectionOptions
+  private _connectionOptions: ConnectionOptions
 
   /** X509証明書 */
-  protected x509Certificate_: X509Certificate | undefined
+  protected _x509Certificate: X509Certificate | undefined
 
   /**
    * コンストラクタ
@@ -24,7 +24,7 @@ export abstract class SslSocket {
     private readonly timeout: number = 3000
   ) {
     const currentDir = process.cwd().replace(/\\/g, '/')
-    this.connectionOptions_ = {
+    this._connectionOptions = {
       host: this.host,
       port: this.port,
       timeout: this.timeout,
@@ -52,7 +52,7 @@ export abstract class SslSocket {
       let responseData: Uint8Array | undefined = undefined
 
       // SSLソケット接続
-      const socket = tls.connect(this.connectionOptions_, () => {
+      const socket = tls.connect(this._connectionOptions, () => {
         // Symbolパケット生成
         const headerSize = 8
         const packetSize = headerSize + payloadSize
@@ -81,7 +81,7 @@ export abstract class SslSocket {
       socket.on('secureConnect', () => {
         const peerX509 = socket.getPeerX509Certificate()
         if (!peerX509) return
-        this.x509Certificate_ = peerX509
+        this._x509Certificate = peerX509
       })
 
       // データ受信
