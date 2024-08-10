@@ -24,7 +24,7 @@ const configFilePath = args[1]
 
 /** ファイルパス */
 const wkDir = process.cwd()
-const pidFilePath = join(wkDir, 'watcher.pid')
+const pidFilePath = join(wkDir, '.watcher.pid')
 
 /** Catapultチェック */
 try {

@@ -17,8 +17,9 @@ export default class SymbolNodeWatcher extends Command {
 
     const __filename = fileURLToPath(import.meta.url)
     const __dirname = dirname(dirname(dirname(dirname(__filename))))
-    const restserverSh = join(__dirname, 'sh/watcherserver.sh')
+    const restserverSh = join(__dirname, 'sh/watcherservice.sh')
 
     exec(`sh ${restserverSh} ${args.cmd}`)
+    process.exit(0)
   }
 }

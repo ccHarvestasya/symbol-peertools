@@ -28,5 +28,6 @@ export default class Rest extends Command {
     const restserverSh = join(__dirname, 'sh/restserver.sh')
 
     exec(`sh ${restserverSh} ${args.cmd} ${flags.port}`)
+    process.exit(0)
   }
 }
