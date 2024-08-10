@@ -29,7 +29,7 @@ const configFilePath = args[2]
 
 /** ファイルパス */
 const wkDir = process.cwd()
-const pidFilePath = join(wkDir, 'rest.pid')
+const pidFilePath = join(wkDir, '.rest.pid')
 
 /** Catapult */
 let catapult: Catapult
