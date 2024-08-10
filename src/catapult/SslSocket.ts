@@ -19,17 +19,17 @@ export abstract class SslSocket {
    * @param timeout タイムアウト(デフォルト: 3000)
    */
   constructor(
+    protected readonly certPath: string,
     protected readonly host: string,
     protected readonly port: number = 7900,
     private readonly timeout: number = 3000
   ) {
-    const currentDir = process.cwd().replace(/\\/g, '/')
     this._connectionOptions = {
       host: this.host,
       port: this.port,
       timeout: this.timeout,
-      cert: fs.readFileSync(`${currentDir}/cert/node.full.crt.pem`),
-      key: fs.readFileSync(`${currentDir}/cert/node.key.pem`),
+      cert: fs.readFileSync(`${certPath}/node.full.crt.pem`),
+      key: fs.readFileSync(`${certPath}/node.key.pem`),
       rejectUnauthorized: false,
     }
   }

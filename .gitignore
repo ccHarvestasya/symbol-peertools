@@ -21,3 +21,4 @@ pnpm-lock.yaml
 privatekeys.yaml
 *.pid
 *.log
+config.json

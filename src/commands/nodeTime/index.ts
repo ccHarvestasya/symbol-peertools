@@ -1,5 +1,6 @@
 import { Command, Flags } from '@oclif/core'
 import { Catapult } from '../../catapult/Catapult.js'
+import { ConfigMgr } from '../../ConfigMgr.js'
 
 export default class NodeTime extends Command {
   static description = 'Display the same results as /node/time for API nodes.'
@@ -19,11 +20,19 @@ export default class NodeTime extends Command {
       description: 'Host of Symbol node to access.',
       required: false,
     }),
+    configFilePath: Flags.string({
+      char: 'c',
+      default: './config.json',
+      description: 'Config file path.',
+      required: false,
+    }),
   }
 
   async run(): Promise<void> {
     const { flags } = await this.parse(NodeTime)
-    const catapult = new Catapult(flags.host, flags.port)
+
+    const config = ConfigMgr.loadConfig(flags.configFilePath)
+    const catapult = new Catapult(config.certPath, flags.host, flags.port)
     const result = await catapult.getNodeTime()
     console.log(JSON.stringify(result, null, 2))
   }
