@@ -106,7 +106,8 @@ export default class Wizard extends Command {
       })
       const stopCommand = await input({ message: 'Symbol node stop command:', default: config.watcher?.stopCommand })
       const runCommand = await input({ message: 'Symbol node start command:', default: config.watcher?.runCommand })
-      const isPeerCheck = await confirm({ message: 'Peer check?:', default: config.watcher?.isPeerCheck })
+      // const isPeerCheck = await confirm({ message: 'Peer check?:', default: config.watcher?.isPeerCheck })
+      const isPeerCheck = true
 
       newConfigWatcher = {
         nodePath: nodeDirPath,

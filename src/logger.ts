@@ -12,11 +12,20 @@ log4js.configure({
       pattern: 'yyyyMMdd',
       type: 'file',
     },
+    watcher: {
+      daysToKeep: 90,
+      filename: 'watcher.log',
+      keepFileExt: true,
+      layout: { type: 'basic' },
+      pattern: 'yyyyMMdd',
+      type: 'file',
+    },
     stdout: { type: 'stdout' },
   },
   categories: {
     default: { appenders: ['stdout'], level: 'all' },
     rest: { appenders: ['rest', 'stdout'], level: 'all' },
+    watcher: { appenders: ['watcher', 'stdout'], level: 'all' },
   },
 })
 
@@ -55,7 +64,6 @@ export class Logger {
   shutdown(exitCode: string | number | undefined) {
     process.exitCode = exitCode
     log4js.shutdown(() => {
-      console.log('### this is printed')
       process.on('exit', () => process.exit(exitCode))
     })
   }
