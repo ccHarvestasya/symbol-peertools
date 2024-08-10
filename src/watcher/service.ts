@@ -4,6 +4,7 @@ import { Catapult } from '../catapult/Catapult.js'
 import { Logger } from '../logger.js'
 import { ConfigMgr } from '../ConfigMgr.js'
 import { NodeWatch } from './NodeWatch.js'
+import cron from 'node-cron'
 
 /** ロガー */
 const logger = new Logger('watcher')
@@ -18,14 +19,8 @@ if (command !== 'start' && command !== 'stop') {
   logger.error('unknown command.')
   logger.shutdown(-1)
 }
-// ポート
-const port = args[1] ?? '3000'
-if (isNaN(Number(port))) {
-  logger.error('port is not numeric.')
-  logger.shutdown(-1)
-}
 // コンフィグファイル
-const configFilePath = args[2]
+const configFilePath = args[1]
 
 /** ファイルパス */
 const wkDir = process.cwd()
@@ -49,8 +44,11 @@ if (command === 'start') {
     logger.info('Watcher service started.')
     try {
       const config = ConfigMgr.loadConfig(configFilePath)
+      if (!config.watcher) throw Error('Symbol node watcher config not set')
       const nw = new NodeWatch(config)
-      nw.start()
+      cron.schedule(config.watcher!.cronExpression, () => {
+        nw.start()
+      })
     } catch (e) {
       logger.fatal(e as string)
       logger.shutdown(-1)
