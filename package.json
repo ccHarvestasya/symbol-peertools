@@ -1,6 +1,6 @@
 {
   "name": "symbol-peertools",
-  "description": "Symbol Peer Node Tools",
+  "description": "Symbol Peer Tools",
   "version": "0.0.0",
   "author": "ccHarvestasya",
   "bin": "./bin/run.js",
