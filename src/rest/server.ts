@@ -3,6 +3,7 @@ import { createServer } from 'node:http'
 import { join } from 'node:path'
 import { Catapult } from '../catapult/Catapult.js'
 import { Logger } from '../logger.js'
+import { ConfigMgr } from '../ConfigMgr.js'
 
 /** ロガー */
 const logger = new Logger('rest')
@@ -17,13 +18,14 @@ if (command !== 'start' && command !== 'stop') {
   logger.error('unknown command.')
   logger.shutdown(-1)
 }
-
 // ポート
 const port = args[1] ?? '3000'
 if (isNaN(Number(port))) {
   logger.error('port is not numeric.')
   logger.shutdown(-1)
 }
+// コンフィグファイル
+const configFilePath = args[2]
 
 /** ファイルパス */
 const wkDir = process.cwd()
@@ -32,7 +34,8 @@ const pidFilePath = join(wkDir, 'rest.pid')
 /** Catapult */
 let catapult: Catapult
 try {
-  catapult = new Catapult('sakia.harvestasya.com')
+  const config = ConfigMgr.loadConfig(configFilePath)
+  catapult = new Catapult(config.certPath, 'sakia.harvestasya.com', config.peerPort)
 } catch (e) {
   logger.fatal(e as string)
   logger.shutdown(-1)

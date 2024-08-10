@@ -35,7 +35,6 @@ export default class Wizard extends Command {
       stopCommand: 'symbol-bootstrap stop',
       runCommand: 'symbol-bootstrap run -d',
       isPeerCheck: true,
-      peerPort: 7900,
     }
 
     /** Configファイル読み込み */
@@ -46,6 +45,7 @@ export default class Wizard extends Command {
       // 読めなかったらデフォルト値
       config = {
         certPath: './cert',
+        peerPort: 7900,
         watcher: configWatcherDef,
       }
     }
@@ -62,15 +62,23 @@ export default class Wizard extends Command {
       })
       if (!isOverwrite) process.exit(0)
     }
-    const caName = await input({ message: 'CA name: ', default: 'Simple Symbol CA' })
-    const caDays = await number({ message: 'CA certificate days: ', default: 7300 })
-    const nodeName = await input({ message: 'Node name: ', default: 'Simple Symbol Node' })
-    const nodeDays = await number({ message: 'Node certificate days: ', default: 375 })
+    const peerPort = await number({ message: 'Peer port:', default: config.peerPort })
+    const caName = await input({ message: 'CA name:', default: 'Simple Symbol CA' })
+    const caDays = await number({ message: 'CA certificate days:', default: 7300 })
+    const nodeName = await input({ message: 'Node name:', default: 'Simple Symbol Node' })
+    const nodeDays = await number({ message: 'Node certificate days:', default: 375 })
     const privatekeysFilePath = await input({
-      message: 'Encrypted privatekeys file save path: ',
+      message: 'Encrypted privatekeys file save path:',
       default: './privatekeys.yaml',
     })
-    const passwd = await password({ message: 'Privatekeys encryption password: ', mask: true })
+    const passwd = await password({
+      message: 'Privatekeys encryption password:',
+      mask: true,
+      validate(value) {
+        if (value === '') return false
+        return true
+      },
+    })
 
     let newConfigWatcher: Watcher | undefined = undefined
     const isWatch = await confirm({ message: 'Do you monitor Symbol Peer nodes?:', default: false })
@@ -99,7 +107,6 @@ export default class Wizard extends Command {
       const stopCommand = await input({ message: 'Symbol node stop command:', default: config.watcher?.stopCommand })
       const runCommand = await input({ message: 'Symbol node start command:', default: config.watcher?.runCommand })
       const isPeerCheck = await confirm({ message: 'Peer check?:', default: config.watcher?.isPeerCheck })
-      const peerPort = await number({ message: 'Peer port:', default: config.watcher?.peerPort })
 
       newConfigWatcher = {
         nodePath: nodeDirPath,
@@ -111,7 +118,6 @@ export default class Wizard extends Command {
         stopCommand: stopCommand,
         runCommand: runCommand,
         isPeerCheck: isPeerCheck,
-        peerPort: peerPort,
       }
     }
 
@@ -121,6 +127,7 @@ export default class Wizard extends Command {
     try {
       const newConfig: Config = {
         certPath: certDirPath,
+        peerPort: peerPort,
         watcher: newConfigWatcher,
       }
       ConfigMgr.saveConfig(newConfig, flags.configFilePath)
