@@ -35,7 +35,7 @@ const pidFilePath = join(wkDir, '.rest.pid')
 let catapult: Catapult
 try {
   const config = ConfigMgr.loadConfig(configFilePath)
-  catapult = new Catapult(config.certPath, 'sakia.harvestasya.com', config.peerPort)
+  catapult = new Catapult(config.certPath, '127.0.0.1', config.peerPort)
 } catch (e) {
   logger.fatal(e as string)
   logger.shutdown(-1)
