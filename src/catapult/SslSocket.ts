@@ -118,6 +118,7 @@ export abstract class SslSocket {
           if (responseDataSize <= responseSize) {
             // 受信が終わったら終了
             socket.end()
+            socket.destroy()
           }
         })
       })
