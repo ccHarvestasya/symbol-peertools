@@ -12,8 +12,7 @@
     "figlet": "^1.7.0",
     "log4js": "^6.9.1",
     "node-cron": "^3.0.3",
-    "simple-symbol-node-cert": "^1.0.5",
-    "tsx": "^4.16.5"
+    "simple-symbol-node-cert": "^1.0.5"
   },
   "devDependencies": {
     "@oclif/prettier-config": "^0.2.1",
@@ -33,6 +32,7 @@
     "shx": "^0.3.3",
     "ts-node": "^10",
     "ts-patch": "^3.2.1",
+    "tsx": "^4.17.0",
     "typescript": "^5",
     "typescript-transform-paths": "^3.4.7"
   },
