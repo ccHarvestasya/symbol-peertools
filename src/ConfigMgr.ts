@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 export interface Config {
   certPath: string
   peerPort?: number
+  isDebug?: boolean
   watcher?: Watcher
 }
 

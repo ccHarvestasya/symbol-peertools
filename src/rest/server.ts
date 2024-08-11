@@ -35,7 +35,9 @@ const pidFilePath = join(wkDir, '.rest.pid')
 let catapult: Catapult
 try {
   const config = ConfigMgr.loadConfig(configFilePath)
-  catapult = new Catapult(config.certPath, '127.0.0.1', config.peerPort)
+  const host = config.isDebug ? 'sakia.harvestasya.com' : '127.0.0.1'
+  logger.debug(`REST Host: ${host}`)
+  catapult = new Catapult(config.certPath, host, config.peerPort)
 } catch (e) {
   logger.fatal(e as string)
   logger.shutdown(-1)
@@ -95,21 +97,23 @@ const server = createServer(async (request, response) => {
       response.writeHead(200, { 'Content-Type': 'application/json' })
       response.end(JSON.stringify(result))
     }
-  } else if (request.url === '/node/diagnosticcounters') {
-    logger.info(`${ip} 200 ${request.url}`)
-    const result = await catapult.getDiagnosticCounters()
-    if (result === undefined) {
-      response.writeHead(500, { 'Content-Type': 'application/json' })
-      response.end(`{"code":"ServerError","message":"Internal Server Error"}`)
-    } else {
-      response.writeHead(200, { 'Content-Type': 'application/json' })
-      const diagnosticCounters = new Map<string, number>()
-      for (const res of result) {
-        diagnosticCounters.set(res.itemName.trim(), Number.parseInt(res.itemValue))
-      }
-      response.end(JSON.stringify({ diagnosticCounters: Object.fromEntries(diagnosticCounters) }))
-    }
-  } else {
+  }
+  //  else if (request.url === '/node/diagnosticcounters') {
+  //   logger.info(`${ip} 200 ${request.url}`)
+  //   const result = await catapult.getDiagnosticCounters()
+  //   if (result === undefined) {
+  //     response.writeHead(500, { 'Content-Type': 'application/json' })
+  //     response.end(`{"code":"ServerError","message":"Internal Server Error"}`)
+  //   } else {
+  //     response.writeHead(200, { 'Content-Type': 'application/json' })
+  //     const diagnosticCounters = new Map<string, number>()
+  //     for (const res of result) {
+  //       diagnosticCounters.set(res.itemName.trim(), Number.parseInt(res.itemValue))
+  //     }
+  //     response.end(JSON.stringify({ diagnosticCounters: Object.fromEntries(diagnosticCounters) }))
+  //   }
+  // }
+  else {
     logger.error(`${ip} 404 ${request.url}`)
     response.writeHead(404, { 'Content-Type': 'application/json' })
     response.end(`{"code":"ResourceNotFound","message":"${request.url} does not exist"}`)
@@ -119,7 +123,7 @@ const server = createServer(async (request, response) => {
 /** サーバ開始&終了 */
 if (command === 'start') {
   if (existsSync(pidFilePath)) {
-    logger.info('REST server has already started.')
+    logger.error('REST server has already started.')
   } else {
     writeFileSync(pidFilePath, process.pid.toString())
     logger.info('REST server started.')
@@ -138,6 +142,6 @@ if (command === 'start') {
     unlinkSync(pidFilePath)
     logger.info('REST server stoped.')
   } else {
-    logger.info('REST server is stopped.')
+    logger.error('REST server is stopped.')
   }
 }

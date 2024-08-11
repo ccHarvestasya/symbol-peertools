@@ -29,6 +29,7 @@
     "eslint-config-prettier": "^9",
     "mocha": "^10",
     "oclif": "^4",
+    "rimraf": "^6.0.1",
     "shx": "^0.3.3",
     "ts-node": "^10",
     "ts-patch": "^3.2.1",
@@ -69,7 +70,8 @@
     "posttest": "yarn lint",
     "prepack": "oclif manifest && oclif readme",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif readme && git add README.md"
+    "version": "oclif readme && git add README.md",
+    "rest:start": "rimraf ./.rest.pid && yarn tsx ./src/rest/server.ts start 3000"
   },
   "types": "dist/index.d.ts"
 }
