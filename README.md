@@ -3,11 +3,9 @@ symbol-peertools
 
 Symbol Peer Node Tools
 
-
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/symbol-peertools.svg)](https://npmjs.org/package/symbol-peertools)
 [![Downloads/week](https://img.shields.io/npm/dw/symbol-peertools.svg)](https://npmjs.org/package/symbol-peertools)
-
 
 <!-- toc -->
 * [Usage](#usage)
