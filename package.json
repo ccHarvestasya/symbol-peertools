@@ -42,7 +42,8 @@
   "files": [
     "/bin",
     "/dist",
-    "/oclif.manifest.json"
+    "/oclif.manifest.json",
+    "/sh"
   ],
   "homepage": "https://github.com/ccHarvestasya/symbol-peertools",
   "keywords": [
