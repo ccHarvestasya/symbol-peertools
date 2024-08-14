@@ -12,6 +12,7 @@
     "figlet": "^1.7.0",
     "log4js": "^6.9.1",
     "node-cron": "^3.0.3",
+    "pm2": "^5.4.2",
     "simple-symbol-node-cert": "^1.0.5"
   },
   "devDependencies": {
@@ -71,7 +72,10 @@
     "prepack": "oclif manifest && oclif readme",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif readme && git add README.md",
-    "rest:start": "rimraf ./.rest.pid && yarn tsx ./src/rest/server.ts start 3000"
+    "rest:start": "rimraf ./.rest.pid && yarn tsx ./src/rest/server.ts start 3000",
+    "pm2:list": "yarn pm2 list",
+    "pm2:rest:start": "yarn build && yarn pm2 start --watch --name rest --interpreter node ./dist/rest/pm2Service.js -- ./config.json",
+    "pm2:rest:stop": "yarn pm2 stop rest"
   },
   "types": "dist/index.d.ts"
 }
