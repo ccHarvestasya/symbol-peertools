@@ -1,11 +1,11 @@
-import { ChainInfo, LatestFinalizedBlock } from './ChainInfo.js'
-import { ChainStatistics } from './ChainStatistics.js'
-import { DiagnosticCounter } from './DiagnosticCounter.js'
-import { FinalizationStatistics } from './FinalizationStatistics.js'
-import { NodeInfo } from './NodeInfo.js'
-import { NodePeer } from './NodePeer.js'
-import { NodeTime } from './NodeTime.js'
-import { NodeUnlockedAccount } from './NodeUnlockedAccount.js'
+import { ChainInfo, LatestFinalizedBlock } from './model/ChainInfo.js'
+import { ChainStatistics } from './model/ChainStatistics.js'
+import { DiagnosticCounter } from './model/DiagnosticCounter.js'
+import { FinalizationStatistics } from './model/FinalizationStatistics.js'
+import { NodeInfo } from './model/NodeInfo.js'
+import { NodePeer } from './model/NodePeer.js'
+import { NodeTime } from './model/NodeTime.js'
+import { NodeUnlockedAccount } from './model/NodeUnlockedAccount.js'
 import { PacketBuffer } from './PacketBuffer.js'
 import { SslSocket } from './SslSocket.js'
 
@@ -18,8 +18,9 @@ export class Catapult extends SslSocket {
     FINALIZATION_STATISTICS: 0x132,
     TIME_SYNC_NETWORK_TIME: 0x120,
     UNLOCKED_ACCOUNTS: 0x304,
-    PUSH_TRANSACTIONS: 0x009,
     DIAGNOSTIC_COUNTERS: 0x300,
+    PUSH_TRANSACTIONS: 0x009,
+    PUSH_PARTIAL_TRANSACTIONS: 0x100,
   }
 
   /**
