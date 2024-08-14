@@ -6,7 +6,7 @@ log4js.configure({
   appenders: {
     rest: {
       daysToKeep: 90,
-      filename: 'rest.log',
+      filename: 'symbol-peertools.log',
       keepFileExt: true,
       layout: { type: 'basic' },
       pattern: 'yyyyMMdd',
@@ -14,7 +14,7 @@ log4js.configure({
     },
     watcher: {
       daysToKeep: 90,
-      filename: 'watcher.log',
+      filename: 'symbol-peertools.log',
       keepFileExt: true,
       layout: { type: 'basic' },
       pattern: 'yyyyMMdd',
