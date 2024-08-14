@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 export interface Config {
   certPath: string
   peerPort?: number
+  restPort?: number
   isDebug?: boolean
   watcher?: Watcher
 }
@@ -28,6 +29,7 @@ export class ConfigMgr {
       if (config.certPath == '' || config.certPath == undefined) throw new Error('not find cert path')
 
       config.peerPort ?? 7900
+      config.restPort ?? 3000
 
       return JSON.parse(configJson)
     } catch (error) {
