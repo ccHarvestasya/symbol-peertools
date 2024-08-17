@@ -1,6 +1,7 @@
 import { exec } from 'node:child_process'
 import { Config } from '../ConfigMgr.js'
 import { Catapult } from '../catapult/Catapult.js'
+import { Logger } from '../logger.js'
 
 const ERROR_MESSAGES = {
   SYMBOL_SERVICE_UNABILABLE: 'symbol.servicesが正常に稼働していません',
@@ -18,10 +19,12 @@ type NodeInfo = {
 let nodesInfo: NodeInfo[] = []
 
 export class NodeWatch {
+  logger: Logger
   config: Config
 
   constructor(config: Config) {
     this.config = config
+    this.logger = new Logger('watcher')
   }
 
   private sendDiscordMessage = async (content: string) => {
@@ -74,6 +77,8 @@ export class NodeWatch {
   }
 
   start = async () => {
+    this.logger.info('=== start watcher ===')
+
     try {
       let nodeList: unknown
       try {
@@ -81,7 +86,7 @@ export class NodeWatch {
         nodeList = symbolServiceResponse
       } catch (e: any) {
         this.sendMessage(`${ERROR_MESSAGES.SYMBOL_SERVICE_UNABILABLE}: ${e.message}`)
-        console.error(e.message)
+        this.logger.error(e.message)
       }
 
       if (Array.isArray(nodeList)) {
@@ -94,20 +99,23 @@ export class NodeWatch {
               finalizedHeight: Number(chainInfo.latestFinalizedBlock.height),
             })
           } catch (e: any) {
-            console.error(`Error fetching chain info for node ${node.host}: ${e.message}`)
+            this.logger.error(`Error fetching chain info for node ${node.host}: ${e.message}`)
           }
         }
       }
       const maxNode = nodesInfo.reduce((max, node) => (node.height > max.height ? node : max), nodesInfo[0])
+      this.logger.info(`maxNodeHost            : ${maxNode.name}`)
 
       let yourNodeChainInfo
       if (this.config.watcher!.isPeerCheck) {
         try {
-          const catapult = new Catapult(this.config.certPath, '127.0.0.1', this.config.peerPort)
+          const host = this.config.isDebug ? 'sakia.harvestasya.com' : '127.0.0.1'
+          this.logger.debug(`Catapult Server Connection Host: ${host}`)
+          const catapult = new Catapult(this.config.certPath, host, this.config.peerPort)
           const chainInfo = await catapult.getChainInfo()
-          yourNodeChainInfo = JSON.stringify(chainInfo)
+          yourNodeChainInfo = chainInfo
         } catch (e) {
-          console.error(e)
+          this.logger.error((e as Error).message)
           this.sendMessage(ERROR_MESSAGES.YOUR_NODE_IS_UNABILABLE)
           this.nodeReboot()
           return
@@ -133,6 +141,10 @@ export class NodeWatch {
 
       const yourNodeHeight = Number(yourNodeChainInfo.height)
       const yourNodeFinalizedHeight = Number(yourNodeChainInfo.latestFinalizedBlock.height)
+      this.logger.info(`yourNodeHeight         : ${yourNodeHeight}`)
+      this.logger.info(`maxNode.height         : ${maxNode.height}`)
+      this.logger.info(`yourNodeFinalizedHeight: ${yourNodeFinalizedHeight}`)
+      this.logger.info(`maxNode.finalizedHeight: ${maxNode.finalizedHeight}`)
 
       if (maxNode.height - this.config.watcher!.differenceChainHeight > yourNodeHeight) {
         const errorMessage = `${ERROR_MESSAGES.NODE_HEIGHT}\nあなたのブロック高: ${yourNodeHeight}\n正常ノードのブロック高${maxNode.height}`
@@ -149,7 +161,10 @@ export class NodeWatch {
       }
     } catch (e: any) {
       this.sendMessage(e.message)
-      console.error(e.message)
+      this.logger.error(e.message)
     }
+
+    this.logger.info('=== e n d watcher ===')
+    this.logger.shutdown(0)
   }
 }
