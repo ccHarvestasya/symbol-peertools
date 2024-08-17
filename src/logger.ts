@@ -1,6 +1,8 @@
 // eslint-disable-next-line import/default
 import log4js from 'log4js'
 
+const logLevel = 'info'
+
 // eslint-disable-next-line import/no-named-as-default-member
 log4js.configure({
   appenders: {
@@ -23,9 +25,9 @@ log4js.configure({
     stdout: { type: 'stdout' },
   },
   categories: {
-    default: { appenders: ['stdout'], level: 'info' },
-    rest: { appenders: ['rest', 'stdout'], level: 'info' },
-    watcher: { appenders: ['watcher', 'stdout'], level: 'info' },
+    default: { appenders: ['stdout'], level: logLevel },
+    rest: { appenders: ['rest', 'stdout'], level: logLevel },
+    watcher: { appenders: ['watcher', 'stdout'], level: logLevel },
   },
 })
 
