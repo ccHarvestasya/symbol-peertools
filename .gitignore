@@ -22,4 +22,4 @@ privatekeys.yaml
 *.pid
 *.log
 config.json
-/src/test
+/tstest
