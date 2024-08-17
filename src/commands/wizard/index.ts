@@ -46,6 +46,7 @@ export default class Wizard extends Command {
       config = {
         certPath: './cert',
         peerPort: 7900,
+        restPort: 3000,
         watcher: configWatcherDef,
       }
     }
@@ -63,6 +64,7 @@ export default class Wizard extends Command {
       if (!isOverwrite) process.exit(0)
     }
     const peerPort = await number({ message: 'Peer port:', default: config.peerPort })
+    const restPort = await number({ message: 'REST port:', default: config.restPort })
     const caName = await input({ message: 'CA name:', default: 'Simple Symbol CA' })
     const caDays = await number({ message: 'CA certificate days:', default: 7300 })
     const nodeName = await input({ message: 'Node name:', default: 'Simple Symbol Node' })
@@ -129,6 +131,7 @@ export default class Wizard extends Command {
       const newConfig: Config = {
         certPath: certDirPath,
         peerPort: peerPort,
+        restPort: restPort,
         watcher: newConfigWatcher,
       }
       ConfigMgr.saveConfig(newConfig, flags.configFilePath)
