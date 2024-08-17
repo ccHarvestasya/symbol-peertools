@@ -126,7 +126,7 @@ export abstract class SslSocket {
       // タイムアウト
       socket.on('timeout', function () {
         socket.destroy()
-        reject('timeout')
+        reject('catapult timeout')
       })
 
       // エラー

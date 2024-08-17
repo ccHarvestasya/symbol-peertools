@@ -7,13 +7,15 @@
   "bugs": "https://github.com/ccHarvestasya/symbol-peertools/issues",
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
+    "@noble/hashes": "^1.4.0",
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
     "figlet": "^1.7.0",
     "log4js": "^6.9.1",
     "node-cron": "^3.0.3",
     "pm2": "^5.4.2",
-    "simple-symbol-node-cert": "^1.0.5"
+    "simple-symbol-node-cert": "^1.0.5",
+    "symbol-sdk": "^3.2.2"
   },
   "devDependencies": {
     "@oclif/prettier-config": "^0.2.1",
@@ -74,7 +76,7 @@
     "version": "oclif readme && git add README.md",
     "rest:start": "rimraf ./.rest.pid && yarn tsx ./src/rest/server.ts start 3000",
     "pm2:list": "yarn pm2 list",
-    "pm2:rest:start": "yarn build && yarn pm2 start --watch --name rest --interpreter node ./dist/rest/pm2Service.js -- ./config.json",
+    "pm2:rest:start": "yarn build && yarn pm2 start --name rest --interpreter node ./dist/rest/pm2Service.js --node-args './dist/rest/pm2Service.js ./config.json'",
     "pm2:rest:stop": "yarn pm2 stop rest"
   },
   "types": "dist/index.d.ts"

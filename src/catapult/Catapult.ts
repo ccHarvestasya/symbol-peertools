@@ -10,6 +10,7 @@ import { PacketBuffer } from './PacketBuffer.js'
 import { SslSocket } from './SslSocket.js'
 
 export class Catapult extends SslSocket {
+  // private STATE_PATH_BASE_TYPE = 0x200
   /** パケットタイプ */
   private PacketType = {
     CHAIN_STATISTICS: 5,
@@ -21,6 +22,15 @@ export class Catapult extends SslSocket {
     DIAGNOSTIC_COUNTERS: 0x300,
     PUSH_TRANSACTIONS: 0x009,
     PUSH_PARTIAL_TRANSACTIONS: 0x100,
+    // ACCOUNT_STATE_PATH: this.STATE_PATH_BASE_TYPE + 0x43,
+    // HASH_LOCK_STATE_PATH: this.STATE_PATH_BASE_TYPE + 0x48,
+    // SECRET_LOCK_STATE_PATH: this.STATE_PATH_BASE_TYPE + 0x52,
+    // METADATA_STATE_PATH: this.STATE_PATH_BASE_TYPE + 0x44,
+    // MOSAIC_STATE_PATH: this.STATE_PATH_BASE_TYPE + 0x4d,
+    // MULTISIG_STATE_PATH: this.STATE_PATH_BASE_TYPE + 0x55,
+    // NAMESPACE_STATE_PATH: this.STATE_PATH_BASE_TYPE + 0x4e,
+    // ACCOUNT_RESTRICTIONS_STATE_PATH: this.STATE_PATH_BASE_TYPE + 0x50,
+    // MOSAIC_RESTRICTIONS_STATE_PATH: this.STATE_PATH_BASE_TYPE + 0x51,
   }
 
   /**
@@ -228,25 +238,60 @@ export class Catapult extends SslSocket {
    * @returns 診断カウンター
    */
   async getDiagnosticCounters(): Promise<DiagnosticCounter[] | undefined> {
-    // ピア問合せ
-    const socketData = await this.requestSocket(this.PacketType.DIAGNOSTIC_COUNTERS)
-    if (!socketData) return undefined
-    const nodeBufferView = new PacketBuffer(Buffer.from(socketData))
-    // 編集
-    const diagnosticCounters: DiagnosticCounter[] = []
-    while (nodeBufferView.index < nodeBufferView.length) {
-      let itemNameBin = nodeBufferView.readBigUInt64LE()
-      let itemNameWork = ''
-      for (let i = 0; i < 13; i++) {
-        const byte = itemNameBin % 27n
-        const char = byte === 0n ? ' ' : Buffer.from((64n + byte).toString(16), 'hex').toString('utf-8')
-        itemNameWork = char + itemNameWork
-        itemNameBin /= 27n
+    let diagnosticCounters: DiagnosticCounter[] | undefined = undefined
+    try {
+      // ピア問合せ
+      const socketData = await this.requestSocket(this.PacketType.DIAGNOSTIC_COUNTERS)
+      if (!socketData) return undefined
+      const nodeBufferView = new PacketBuffer(Buffer.from(socketData))
+      // 編集
+      diagnosticCounters = []
+      while (nodeBufferView.index < nodeBufferView.length) {
+        let itemNameBin = nodeBufferView.readBigUInt64LE()
+        let itemNameWork = ''
+        for (let i = 0; i < 13; i++) {
+          const byte = itemNameBin % 27n
+          const char = byte === 0n ? ' ' : Buffer.from((64n + byte).toString(16), 'hex').toString('utf-8')
+          itemNameWork = char + itemNameWork
+          itemNameBin /= 27n
+        }
+        const itemValueWork = nodeBufferView.readBigUInt64LE()
+        const dCounter = new DiagnosticCounter(itemNameWork, itemValueWork.toString())
+        diagnosticCounters.push(dCounter)
       }
-      const itemValueWork = nodeBufferView.readBigUInt64LE()
-      const dCounter = new DiagnosticCounter(itemNameWork, itemValueWork.toString())
-      diagnosticCounters.push(dCounter)
+    } catch {
+      diagnosticCounters = undefined
     }
     return diagnosticCounters
+  }
+
+  /**
+   * トランザクションアナウンス
+   * @param payload トランザクションペイロード(Hex文字列)
+   */
+  async announceTx(payloadHex: string): Promise<boolean> {
+    const payload = Uint8Array.from(Buffer.from(payloadHex, 'hex'))
+    try {
+      await this.requestSocket(this.PacketType.PUSH_TRANSACTIONS, payload, false)
+    } catch (e) {
+      return false
+    }
+    return true
+  }
+
+  /**
+   * アグリゲートボンデッドトランザクションアナウンス
+   * API必要
+   * @param payloadHex トランザクションペイロード(Hex文字列)
+   * @returns
+   */
+  async announceTxPartial(payloadHex: string): Promise<boolean> {
+    const payload = Uint8Array.from(Buffer.from(payloadHex, 'hex'))
+    try {
+      await this.requestSocket(this.PacketType.PUSH_PARTIAL_TRANSACTIONS, payload, false)
+    } catch (e) {
+      return false
+    }
+    return true
   }
 }

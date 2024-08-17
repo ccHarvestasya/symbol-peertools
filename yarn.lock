@@ -1213,7 +1213,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:~1.4.0":
+"@noble/hashes@npm:^1.4.0, @noble/hashes@npm:~1.4.0":
   version: 1.4.0
   resolution: "@noble/hashes@npm:1.4.0"
   checksum: 10c0/8c3f005ee72e7b8f9cff756dfae1241485187254e3f743873e22073d63906863df5d4f13d441b7530ea614b7a093f0d889309f28b59850f33b66cb26a779a4a5
@@ -7453,6 +7453,7 @@ __metadata:
   resolution: "symbol-peertools@workspace:."
   dependencies:
     "@inquirer/prompts": "npm:^5.3.8"
+    "@noble/hashes": "npm:^1.4.0"
     "@oclif/core": "npm:^4"
     "@oclif/plugin-help": "npm:^6"
     "@oclif/prettier-config": "npm:^0.2.1"
@@ -7476,6 +7477,7 @@ __metadata:
     rimraf: "npm:^6.0.1"
     shx: "npm:^0.3.3"
     simple-symbol-node-cert: "npm:^1.0.5"
+    symbol-sdk: "npm:^3.2.2"
     ts-node: "npm:^10"
     ts-patch: "npm:^3.2.1"
     tsx: "npm:^4.17.0"

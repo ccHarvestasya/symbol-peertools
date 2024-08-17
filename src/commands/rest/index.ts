@@ -52,20 +52,48 @@ export default class Rest extends Command {
                 return pm2.disconnect()
               }
               const res = list.filter((item) => (item.name === 'rest' ? true : false))
+              const logger = new Logger('rest')
               if (res[0].pm2_env?.status?.toString() !== 'online') {
-                const logger = new Logger('rest')
                 logger.error('Startup failed. Please check the log.')
                 logger.shutdown(-1)
                 return pm2.disconnect()
               }
-              process.exit(0)
+              logger.info('REST server is started.')
+              return pm2.disconnect()
             })
           }
         )
       } else if (args.cmd === 'stop') {
+        pm2.stop('rest', (err, proc) => {
+          if (err) {
+            console.error(err)
+            return pm2.disconnect()
+          }
+          pm2.list((err, list) => {
+            if (err) {
+              console.error(err)
+              return pm2.disconnect()
+            }
+            const res = list.filter((item) => (item.name === 'rest' ? true : false))
+            const logger = new Logger('rest')
+            if (res[0].pm2_env?.status?.toString() !== 'stopped') {
+              logger.error('Stop failed. Please check the log.')
+              return pm2.disconnect()
+            }
+            logger.info('REST server is stopped.')
+            return pm2.disconnect()
+          })
+        })
       } else if (args.cmd === 'status') {
         pm2.list((err, list) => {
-          console.log(err, list)
+          const res = list.filter((item) => (item.name === 'rest' ? true : false))
+          const logger = new Logger('rest')
+          if (res[0].pm2_env?.status?.toString() !== 'online') {
+            logger.info('REST server is stopped.')
+          } else {
+            logger.info('REST server is started.')
+          }
+          return pm2.disconnect()
         })
       }
     })

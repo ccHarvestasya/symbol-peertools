@@ -1,10 +1,22 @@
 import { IncomingMessage, ServerResponse } from 'node:http'
 import { Catapult } from '../catapult/Catapult.js'
 import { Logger } from '../logger.js'
-import path from 'node:path'
+import { RestBase } from './RestBase.js'
 
-export class RestTransaction {
-  async response(
+export class RestTransaction extends RestBase {
+  protected async responseGet(
+    request: IncomingMessage,
+    response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
+    catapult: Catapult
+  ) {}
+
+  protected async responsePost(
+    request: IncomingMessage,
+    response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
+    catapult: Catapult
+  ) {}
+
+  protected async responsePut(
     request: IncomingMessage,
     response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
     catapult: Catapult
@@ -12,97 +24,31 @@ export class RestTransaction {
     const logger = new Logger('rest')
     const ip = request.headers['x-forwarded-for'] || request.socket.remoteAddress
 
-    switch (request.method) {
-      case 'GET':
+    let payload = await new Promise<string>((resolve) => {
+      let data = ''
+      request
+        .on('data', (chunk) => (data += chunk))
+        .on('end', () => {
+          resolve(data)
+        })
+    })
+    logger.debug(payload)
+    const payloadJson = JSON.parse(payload)
+
+    switch (request.url) {
+      case '/transactions':
+        if (payloadJson.payload === undefined || payloadJson.payload === '') throw Error(`payload is empty.`)
+        const announceTxResult = await catapult.announceTx(payloadJson.payload)
+        if (!announceTxResult) throw Error('Internal error has occurred.')
+        logger.info(`${ip} 202 ${request.url}`)
+        response.writeHead(202, { 'Content-Type': 'application/json' })
+        response.end(`{"message":"packet 9 was pushed to the network via ${request.url}"}`)
         break
-      case 'POST':
-        break
-      case 'PUT':
-        break
+      case '/transactions/partial':
+      case '/transactions/cosignature':
       default:
+        // 処理無し
         break
     }
   }
-
-  private async responseGet(
-    request: IncomingMessage,
-    response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
-    catapult: Catapult
-  ) {
-    const logger = new Logger('rest')
-    const ip = request.headers['x-forwarded-for'] || request.socket.remoteAddress
-
-    try {
-      let result: any
-      switch (true) {
-        case /\/transactions\/confirmed/.test(request.url!):
-        case /\/transactions\/confirmed\/.*/.test(request.url!):
-        case /\/transactions\/unconfirmed/.test(request.url!):
-        case /\/transactions\/unconfirmed\/.*/.test(request.url!):
-        case /\/transactions\/partial/.test(request.url!):
-        case /\/transactions\/partial\/.*/.test(request.url!):
-        default:
-          // 処理無し
-          break
-      }
-    } catch {
-      response.writeHead(500, { 'Content-Type': 'application/json' })
-      response.end(`{"code":"ServerError","message":"Internal Server Error"}`)
-    }
-  }
-
-  private async responsePost(
-    request: IncomingMessage,
-    response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
-    catapult: Catapult
-  ) {
-    const logger = new Logger('rest')
-    const ip = request.headers['x-forwarded-for'] || request.socket.remoteAddress
-
-    try {
-      let result: any
-      switch (request.url) {
-        case '/transactions/confirmed':
-        case '/transactions/unconfirmed':
-        case '/transactions/partial':
-        default:
-          // 処理無し
-          break
-      }
-    } catch {
-      response.writeHead(500, { 'Content-Type': 'application/json' })
-      response.end(`{"code":"ServerError","message":"Internal Server Error"}`)
-    }
-  }
-
-  private async responsePut(
-    request: IncomingMessage,
-    response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
-    catapult: Catapult
-  ) {
-    const logger = new Logger('rest')
-    const ip = request.headers['x-forwarded-for'] || request.socket.remoteAddress
-
-    try {
-      let result: any
-      switch (request.url) {
-        case '/transactions':
-          logger.info(`${ip} 200 ${request.url}`)
-          break
-        case '/transactions/partial':
-          logger.info(`${ip} 200 ${request.url}`)
-          break
-        case '/transactions/cosignature':
-          logger.info(`${ip} 200 ${request.url}`)
-          break
-        default:
-          // 処理無し
-          break
-      }
-    } catch {
-      response.writeHead(500, { 'Content-Type': 'application/json' })
-      response.end(`{"code":"ServerError","message":"Internal Server Error"}`)
-    }
-  }
-  // end
 }
