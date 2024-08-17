@@ -1,4 +1,4 @@
-import password from '@inquirer/password'
+import { password } from '@inquirer/prompts'
 import { Command, Flags } from '@oclif/core'
 import { SimpleSymbolNodeCert } from 'simple-symbol-node-cert'
 

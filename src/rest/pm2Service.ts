@@ -44,7 +44,7 @@ try {
   /** サーバ開始 */
   logger.debug(`Started REST service listening on port ${config.restPort}.`)
   server.listen(config.restPort)
-} catch (e) {
-  logger.error(e as string)
+} catch (error) {
+  logger.error(error as string)
   logger.shutdown(-1)
 }

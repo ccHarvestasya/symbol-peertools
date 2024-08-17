@@ -14,29 +14,32 @@ export class RestChain extends RestBase {
 
     let result: any
     switch (request.url) {
-      case '/chain/info':
+      case '/chain/info': {
         logger.info(`${ip} 200 ${request.url}`)
         result = await catapult.getChainInfo()
-        if (result === undefined) throw Error('Internal Server Error')
+        if (result === undefined) throw new Error('Internal Server Error')
         response.writeHead(200, { 'Content-Type': 'application/json' })
         response.end(JSON.stringify(result))
         break
-      default:
+      }
+
+      default: {
         // 処理無し
         break
+      }
     }
   }
 
   protected async responsePost(
-    request: IncomingMessage,
-    response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
-    catapult: Catapult
+    _request: IncomingMessage,
+    _response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
+    _catapult: Catapult
   ) {}
 
   protected async responsePut(
-    request: IncomingMessage,
-    response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
-    catapult: Catapult
+    _request: IncomingMessage,
+    _response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
+    _catapult: Catapult
   ) {}
   // end
 }

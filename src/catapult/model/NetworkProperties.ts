@@ -1,3 +1,6 @@
+/* eslint-disable max-params */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-useless-constructor */
 export class NetworkProperties {
   constructor(
     public readonly network: {

@@ -1,6 +1,6 @@
-import { X509Certificate } from 'crypto'
-import fs from 'fs'
-import tls, { ConnectionOptions } from 'tls'
+import { X509Certificate } from 'node:crypto'
+import fs from 'node:fs'
+import tls, { ConnectionOptions } from 'node:tls'
 
 /**
  * SSLソケット
@@ -25,9 +25,9 @@ export abstract class SslSocket {
     private readonly timeout: number = 3000
   ) {
     this._connectionOptions = {
-      host: this.host,
-      port: this.port,
-      timeout: this.timeout,
+      host,
+      port,
+      timeout,
       cert: fs.readFileSync(`${certPath}/node.full.crt.pem`),
       key: fs.readFileSync(`${certPath}/node.key.pem`),
       rejectUnauthorized: false,
@@ -49,7 +49,7 @@ export abstract class SslSocket {
     return new Promise<Uint8Array | undefined>((resolve, reject) => {
       const payloadSize = payload ? payload.length : 0
       let responseSize = 8 // ヘッダ分のサイズを前もって付与
-      let responseData: Uint8Array | undefined = undefined
+      let responseData: Uint8Array | undefined
 
       // SSLソケット接続
       const socket = tls.connect(this._connectionOptions, () => {
@@ -92,29 +92,31 @@ export abstract class SslSocket {
         const responseDataSize = nodeBufferView.readUInt32LE(0)
         if (responseDataSize === 0) {
           socket.destroy()
-          reject('empty data')
+          reject(new Error('empty data'))
         }
+
         // レスポンスパケットタイプチェック
         const responsePacketType = nodeBufferView.readUInt32LE(4)
         if (responsePacketType !== packetType) {
           socket.destroy()
-          reject(`mismatch packet type: expect: ${packetType} actual: ${responsePacketType}`)
+          reject(new Error(`mismatch packet type: expect: ${packetType} actual: ${responsePacketType}`))
         }
 
         // ヘッダが問題なければデータ部取得
         socket.on('data', (data) => {
           const tempResponseData = new Uint8Array(data)
           responseSize += tempResponseData.length
-          if (!responseData) {
-            // 初回
-            responseData = tempResponseData
-          } else {
+          if (responseData) {
             // 連結
             const merged = new Uint8Array(responseData.length + tempResponseData.length)
             merged.set(responseData)
             merged.set(tempResponseData, responseData.length)
             responseData = merged
+          } else {
+            // 初回
+            responseData = tempResponseData
           }
+
           if (responseDataSize <= responseSize) {
             // 受信が終わったら終了
             socket.end()
@@ -124,19 +126,19 @@ export abstract class SslSocket {
       })
 
       // タイムアウト
-      socket.on('timeout', function () {
+      socket.on('timeout', () => {
         socket.destroy()
-        reject('catapult timeout')
+        reject(new Error('catapult timeout'))
       })
 
       // エラー
-      socket.on('error', function (error) {
+      socket.on('error', (error) => {
         socket.destroy()
         reject(error)
       })
 
       // 切断
-      socket.on('close', function () {
+      socket.on('close', () => {
         resolve(responseData)
       })
     })

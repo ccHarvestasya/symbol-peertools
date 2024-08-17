@@ -29,70 +29,100 @@ export default class SymbolNodeWatcher extends Command {
 
     pm2.connect((err) => {
       if (err) {
-        console.error(err)
-        process.exit(-1)
+        logger.error(err.message)
+        throw new Error(err.message)
       }
-      if (args.cmd === 'start') {
-        pm2.start(
-          {
-            script: serviceJs,
-            name: label,
-            node_args: `${serviceJs} ${flags.config}`,
-            interpreter: 'node',
-          },
-          (err, _apps) => {
+
+      switch (args.cmd) {
+        case 'start': {
+          pm2.start(
+            {
+              script: serviceJs,
+              name: label,
+              // eslint-disable-next-line camelcase
+              node_args: `${serviceJs} ${flags.config}`,
+              interpreter: 'node',
+            },
+            (err, _apps) => {
+              if (err) {
+                logger.error(err.message)
+                return pm2.disconnect()
+              }
+
+              pm2.list((err, list) => {
+                if (err) {
+                  logger.error(err.message)
+                  return pm2.disconnect()
+                }
+
+                const res = list.filter((item) => item.name === label)
+                if (res.length !== 1 || res[0].pm2_env?.status?.toString() !== 'online') {
+                  logger.error('Startup failed. Please check the log.')
+                  return pm2.disconnect()
+                }
+
+                logger.info(`${label} is started.`)
+                return pm2.disconnect()
+              })
+            }
+          )
+
+          break
+        }
+
+        case 'stop': {
+          pm2.stop(label, (err, _proc) => {
             if (err) {
-              console.error(err)
+              logger.error(err.message)
               return pm2.disconnect()
             }
+
             pm2.list((err, list) => {
               if (err) {
-                console.error(err)
+                logger.error(err.message)
                 return pm2.disconnect()
               }
-              const res = list.filter((item) => (item.name === label ? true : false))
-              if (res.length !== 1 || res[0].pm2_env?.status?.toString() !== 'online') {
-                logger.error('Startup failed. Please check the log.')
+
+              const res = list.filter((item) => item.name === label)
+              if (res.length !== 1 || res[0].pm2_env?.status?.toString() !== 'stopped') {
+                logger.error('Stop failed. Please check the log.')
                 return pm2.disconnect()
               }
-              logger.info(`${label} is started.`)
-              return pm2.disconnect()
+
+              pm2.delete(label, (err, _proc) => {
+                if (err) {
+                  logger.error(err.message)
+                  return pm2.disconnect()
+                }
+
+                logger.info(`${label} is stopped.`)
+                return pm2.disconnect()
+              })
             })
-          }
-        )
-      } else if (args.cmd === 'stop') {
-        pm2.stop(label, (err, proc) => {
-          if (err) {
-            console.error(err)
-            return pm2.disconnect()
-          }
-          pm2.list((err, list) => {
-            if (err) {
-              console.error(err)
-              return pm2.disconnect()
+          })
+
+          break
+        }
+
+        case 'status': {
+          pm2.list((_err, list) => {
+            const res = list.filter((item) => item.name === label)
+            if (res.length !== 1 || res[0].pm2_env?.status?.toString() !== 'online') {
+              logger.info(`${label} is stopped.`)
+            } else {
+              logger.info(`${label} is started.`)
             }
-            const res = list.filter((item) => (item.name === label ? true : false))
-            if (res.length !== 1 || res[0].pm2_env?.status?.toString() !== 'stopped') {
-              logger.error('Stop failed. Please check the log.')
-              return pm2.disconnect()
-            }
-            logger.info(`${label} is stopped.`)
+
             return pm2.disconnect()
           })
-        })
-      } else if (args.cmd === 'status') {
-        pm2.list((err, list) => {
-          const res = list.filter((item) => (item.name === label ? true : false))
-          if (res.length !== 1 || res[0].pm2_env?.status?.toString() !== 'online') {
-            logger.info(`${label} is stopped.`)
-          } else {
-            logger.info(`${label} is started.`)
-          }
-          return pm2.disconnect()
-        })
-      } else {
-        logger.error(`unknown command.`)
-        pm2.disconnect()
+
+          break
+        }
+
+        default: {
+          logger.error(`unknown command.`)
+          pm2.disconnect()
+        }
       }
     })
   }

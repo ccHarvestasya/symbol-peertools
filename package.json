@@ -71,6 +71,7 @@
   "scripts": {
     "build": "shx rm -rf dist && tspc -b",
     "lint": "prettier ./src --write && eslint ./src --ext ts,tsx --report-unused-disable-directives",
+    "lint:fix": "prettier ./src --write && eslint ./src --ext ts,tsx --report-unused-disable-directives --fix",
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "yarn lint",
     "prepack": "oclif manifest && oclif readme",

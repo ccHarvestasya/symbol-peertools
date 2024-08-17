@@ -1,9 +1,7 @@
-// eslint-disable-next-line import/default
 import log4js from 'log4js'
 
 const logLevel = 'info'
 
-// eslint-disable-next-line import/no-named-as-default-member
 log4js.configure({
   appenders: {
     rest: {
@@ -35,7 +33,6 @@ export class Logger {
   private logger_
 
   constructor(category?: string) {
-    // eslint-disable-next-line import/no-named-as-default-member
     this.logger_ = log4js.getLogger(category)
   }
 
@@ -66,7 +63,9 @@ export class Logger {
   shutdown(exitCode: string | number | undefined) {
     process.exitCode = exitCode
     log4js.shutdown(() => {
-      process.on('exit', () => process.exit(exitCode))
+      process.on('exit', () => {
+        throw new Error(`process.exit(${exitCode})`)
+      })
     })
   }
 }

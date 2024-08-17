@@ -45,7 +45,7 @@ export default class MyHelpClass extends Help {
     const subCommands = this.sortedCommands.filter(
       (c) => c.id.startsWith(name + ':') && c.id.split(':').length === depth + 1
     )
-    const plugin = this.config.plugins.get(command.pluginName!)
+    // const plugin = this.config.plugins.get(command.pluginName!)
 
     // const state = this.config.pjson?.oclif?.state || plugin?.pjson?.oclif?.state || command.state
 

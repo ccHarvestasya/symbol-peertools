@@ -16,7 +16,7 @@ type NodeInfo = {
   finalizedHeight: number
 }
 
-let nodesInfo: NodeInfo[] = []
+const nodesInfo: NodeInfo[] = []
 
 export class NodeWatch {
   logger: Logger
@@ -38,6 +38,7 @@ export class NodeWatch {
       body: JSON.stringify({
         username: 'symbol node wather BOT',
         content,
+        // eslint-disable-next-line camelcase
         allowed_mentions: {},
       }),
     })
@@ -48,15 +49,16 @@ export class NodeWatch {
   }
 
   private nodeReboot = () => {
-    const timeoutMilliseconds = 120000
+    const timeoutMilliseconds = 120_000
     const command = `cd ${this.config.watcher!.nodePath} && ${this.config.watcher!.stopCommand} && ${
       this.config.watcher!.runCommand
     }`
-    const childProcess = exec(command, (error, stdout, stderr) => {
+    const childProcess = exec(command, (error, _stdout, _stderr) => {
       if (error) {
         this.sendMessage(`ノード再起動エラー: ${error}`)
         return
       }
+
       this.sendMessage('正常に再起動が完了しました。確認してください。')
     })
 
@@ -84,25 +86,28 @@ export class NodeWatch {
       try {
         const symbolServiceResponse = await this.fetchJSON(this.config.watcher!.symbolStatisticServiceUrl)
         nodeList = symbolServiceResponse
-      } catch (e: any) {
-        this.sendMessage(`${ERROR_MESSAGES.SYMBOL_SERVICE_UNABILABLE}: ${e.message}`)
-        this.logger.error(e.message)
+      } catch (error: any) {
+        this.sendMessage(`${ERROR_MESSAGES.SYMBOL_SERVICE_UNABILABLE}: ${error.message}`)
+        this.logger.error(error.message)
       }
 
       if (Array.isArray(nodeList)) {
         for (const node of nodeList) {
           try {
+            // eslint-disable-next-line no-await-in-loop
             const chainInfo = (await this.fetchJSON(`http://${node.host}:3000/chain/info`)) as any
             nodesInfo.push({
               name: node.host,
               height: Number(chainInfo.height),
               finalizedHeight: Number(chainInfo.latestFinalizedBlock.height),
             })
-          } catch (e: any) {
-            this.logger.error(`Error fetching chain info for node ${node.host}: ${e.message}`)
+          } catch (error: any) {
+            this.logger.error(`Error fetching chain info for node ${node.host}: ${error.message}`)
           }
         }
       }
+
+      // eslint-disable-next-line unicorn/no-array-reduce
       const maxNode = nodesInfo.reduce((max, node) => (node.height > max.height ? node : max), nodesInfo[0])
       this.logger.info(`maxNodeHost            : ${maxNode.name}`)
 
@@ -114,8 +119,8 @@ export class NodeWatch {
           const catapult = new Catapult(this.config.certPath, host, this.config.peerPort)
           const chainInfo = await catapult.getChainInfo()
           yourNodeChainInfo = chainInfo
-        } catch (e) {
-          this.logger.error((e as Error).message)
+        } catch (error) {
+          this.logger.error((error as Error).message)
           this.sendMessage(ERROR_MESSAGES.YOUR_NODE_IS_UNABILABLE)
           this.nodeReboot()
           return
@@ -130,7 +135,7 @@ export class NodeWatch {
           return
         }
 
-        if (yourNodeChainInfoResponce == undefined || !yourNodeChainInfoResponce.ok) {
+        if (yourNodeChainInfoResponce === undefined || !yourNodeChainInfoResponce.ok) {
           this.sendMessage(ERROR_MESSAGES.YOUR_NODE_IS_UNABILABLE)
           this.nodeReboot()
           return
@@ -159,9 +164,9 @@ export class NodeWatch {
         this.nodeReboot()
         return
       }
-    } catch (e: any) {
-      this.sendMessage(e.message)
-      this.logger.error(e.message)
+    } catch (error: any) {
+      this.sendMessage(error.message)
+      this.logger.error(error.message)
     }
 
     this.logger.info('=== e n d watcher ===')

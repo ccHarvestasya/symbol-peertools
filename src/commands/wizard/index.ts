@@ -1,6 +1,6 @@
 import { Command, Flags } from '@oclif/core'
 import { confirm, input, number, password } from '@inquirer/prompts'
-import { existsSync } from 'fs'
+import { existsSync } from 'node:fs'
 import { SimpleSymbolNodeCert } from 'simple-symbol-node-cert'
 import { Config, ConfigMgr, Watcher } from '../../ConfigMgr.js'
 import figlet from 'figlet'
@@ -38,7 +38,7 @@ export default class Wizard extends Command {
     }
 
     /** Configファイル読み込み */
-    let config: Config | undefined = undefined
+    let config: Config | undefined
     try {
       config = ConfigMgr.loadConfig(flags.configFilePath)
     } catch {
@@ -50,6 +50,7 @@ export default class Wizard extends Command {
         watcher: configWatcherDef,
       }
     }
+
     if (!config.watcher) {
       config.watcher = configWatcherDef
     }
@@ -61,8 +62,9 @@ export default class Wizard extends Command {
       isOverwrite = await confirm({
         message: `Overwrite?`,
       })
-      if (!isOverwrite) process.exit(0)
+      if (!isOverwrite) throw new Error(`Exit because the file already exists.`)
     }
+
     const peerPort = await number({ message: 'Peer port:', default: config.peerPort })
     const restPort = await number({ message: 'REST port:', default: config.restPort })
     const caName = await input({ message: 'CA name:', default: 'Simple Symbol CA' })
@@ -82,7 +84,7 @@ export default class Wizard extends Command {
       },
     })
 
-    let newConfigWatcher: Watcher | undefined = undefined
+    let newConfigWatcher: Watcher | undefined
     const isWatch = await confirm({ message: 'Do you monitor Symbol Peer nodes?:', default: false })
     if (isWatch) {
       const nodeDirPath = await input({
@@ -113,14 +115,14 @@ export default class Wizard extends Command {
 
       newConfigWatcher = {
         nodePath: nodeDirPath,
-        discordWebhookUrl: discordWebhookUrl,
-        cronExpression: cronExpression,
-        symbolStatisticServiceUrl: symbolStatisticServiceUrl,
+        discordWebhookUrl,
+        cronExpression,
+        symbolStatisticServiceUrl,
         differenceChainHeight: differenceChainHeight!,
         differenceFinHeight: differenceFinHeight!,
-        stopCommand: stopCommand,
-        runCommand: runCommand,
-        isPeerCheck: isPeerCheck,
+        stopCommand,
+        runCommand,
+        isPeerCheck,
       }
     }
 
@@ -130,13 +132,13 @@ export default class Wizard extends Command {
     try {
       const newConfig: Config = {
         certPath: certDirPath,
-        peerPort: peerPort,
-        restPort: restPort,
+        peerPort,
+        restPort,
         watcher: newConfigWatcher,
       }
       ConfigMgr.saveConfig(newConfig, flags.configFilePath)
-    } catch (e) {
-      console.error(e)
+    } catch (error) {
+      console.error(error)
     }
   }
 }

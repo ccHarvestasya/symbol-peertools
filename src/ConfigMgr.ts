@@ -20,29 +20,29 @@ export interface Watcher {
   isPeerCheck: boolean
 }
 
-export class ConfigMgr {
-  static loadConfig(configFilePath?: string): Config {
+export const ConfigMgr = {
+  loadConfig(configFilePath?: string): Config {
     try {
-      const configJson = readFileSync(configFilePath ?? './config.json', { encoding: 'utf-8' })
+      const configJson = readFileSync(configFilePath ?? './config.json', { encoding: 'utf8' })
       const config: Config = JSON.parse(configJson)
 
-      if (config.certPath == '' || config.certPath == undefined) throw new Error('not find cert path')
+      if (config.certPath === '' || config.certPath === undefined) throw new Error('not find cert path')
 
-      config.peerPort ?? 7900
-      config.restPort ?? 3000
+      config.peerPort = config.peerPort ?? 7900
+      config.restPort = config.restPort ?? 3000
 
       return JSON.parse(configJson)
-    } catch (error) {
+    } catch {
       throw new Error('Error loading config file')
     }
-  }
+  },
 
-  static saveConfig(config: Config, configFilePath?: string): void {
+  saveConfig(config: Config, configFilePath?: string): void {
     try {
       const configJson = JSON.stringify(config, null, 2)
-      writeFileSync(configFilePath ?? './config.json', configJson, { encoding: 'utf-8' })
-    } catch (error) {
+      writeFileSync(configFilePath ?? './config.json', configJson, { encoding: 'utf8' })
+    } catch {
       throw new Error('Error saveing config file')
     }
-  }
+  },
 }

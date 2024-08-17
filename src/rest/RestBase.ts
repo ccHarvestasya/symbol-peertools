@@ -13,20 +13,27 @@ export abstract class RestBase {
 
     try {
       switch (request.method) {
-        case 'GET':
+        case 'GET': {
           await this.responseGet(request, response, catapult)
           break
-        case 'POST':
+        }
+
+        case 'POST': {
           await this.responsePost(request, response, catapult)
           break
-        case 'PUT':
+        }
+
+        case 'PUT': {
           await this.responsePut(request, response, catapult)
           break
-        default:
+        }
+
+        default: {
           break
+        }
       }
-    } catch (e) {
-      const msg = (e as Error).message
+    } catch (error) {
+      const msg = (error as Error).message
       logger.error(`${ip} 500 ${request.url} ${msg}`)
       response.writeHead(500, { 'Content-Type': 'application/json' })
       response.end(`{"code":"InternalError","message":"${msg}"}`)
@@ -34,20 +41,20 @@ export abstract class RestBase {
   }
 
   protected abstract responseGet(
-    request: IncomingMessage,
-    response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
-    catapult: Catapult
+    _request: IncomingMessage,
+    _response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
+    _catapult: Catapult
   ): Promise<void>
 
   protected abstract responsePost(
-    request: IncomingMessage,
-    response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
-    catapult: Catapult
+    _request: IncomingMessage,
+    _response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
+    _catapult: Catapult
   ): Promise<void>
 
   protected abstract responsePut(
-    request: IncomingMessage,
-    response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
-    catapult: Catapult
+    _request: IncomingMessage,
+    _response: ServerResponse<IncomingMessage> & { req: IncomingMessage },
+    _catapult: Catapult
   ): Promise<void>
 }

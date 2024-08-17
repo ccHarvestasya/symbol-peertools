@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-useless-constructor */
 export class ChainInfo {
   constructor(
     public readonly height: string,
