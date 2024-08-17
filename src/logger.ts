@@ -23,9 +23,9 @@ log4js.configure({
     stdout: { type: 'stdout' },
   },
   categories: {
-    default: { appenders: ['stdout'], level: 'all' },
-    rest: { appenders: ['rest', 'stdout'], level: 'all' },
-    watcher: { appenders: ['watcher', 'stdout'], level: 'all' },
+    default: { appenders: ['stdout'], level: 'info' },
+    rest: { appenders: ['rest', 'stdout'], level: 'info' },
+    watcher: { appenders: ['watcher', 'stdout'], level: 'info' },
   },
 })
 
