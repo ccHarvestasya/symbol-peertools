@@ -10,7 +10,6 @@ class Pm2Service {
   start() {
     /** ロガー */
     const logger = new Logger('rest')
-    logger.info('================================================================================')
 
     /** コマンドライン引数 */
     const args = process.argv.slice(2)
@@ -45,7 +44,7 @@ class Pm2Service {
       })
 
       /** サーバ開始 */
-      logger.info(`Started REST service listening on port ${config.restPort}.`)
+      logger.debug(`Started REST service listening on port ${config.restPort}.`)
       server.listen(config.restPort)
     } catch (e) {
       logger.error(e as string)

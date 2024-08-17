@@ -22,6 +22,9 @@ export default class Rest extends Command {
   }
 
   async run(): Promise<void> {
+    const label = 'rest'
+    const logger = new Logger(label)
+
     const { args, flags } = await this.parse(Rest)
 
     const __filename = fileURLToPath(import.meta.url)
@@ -37,7 +40,7 @@ export default class Rest extends Command {
         pm2.start(
           {
             script: serviceJs,
-            name: 'rest',
+            name: label,
             node_args: `${serviceJs} ${flags.config}`,
             interpreter: 'node',
           },
@@ -51,20 +54,18 @@ export default class Rest extends Command {
                 console.error(err)
                 return pm2.disconnect()
               }
-              const res = list.filter((item) => (item.name === 'rest' ? true : false))
-              const logger = new Logger('rest')
+              const res = list.filter((item) => (item.name === label ? true : false))
               if (res[0].pm2_env?.status?.toString() !== 'online') {
                 logger.error('Startup failed. Please check the log.')
-                logger.shutdown(-1)
                 return pm2.disconnect()
               }
-              logger.info('REST server is started.')
+              logger.info(`${label} server is started.`)
               return pm2.disconnect()
             })
           }
         )
       } else if (args.cmd === 'stop') {
-        pm2.stop('rest', (err, proc) => {
+        pm2.stop(label, (err, proc) => {
           if (err) {
             console.error(err)
             return pm2.disconnect()
@@ -74,24 +75,22 @@ export default class Rest extends Command {
               console.error(err)
               return pm2.disconnect()
             }
-            const res = list.filter((item) => (item.name === 'rest' ? true : false))
-            const logger = new Logger('rest')
+            const res = list.filter((item) => (item.name === label ? true : false))
             if (res[0].pm2_env?.status?.toString() !== 'stopped') {
-              logger.error('Stop failed. Please check the log.')
+              logger.error(`Stop failed. Please check the log.`)
               return pm2.disconnect()
             }
-            logger.info('REST server is stopped.')
+            logger.info(`${label} server is stopped.`)
             return pm2.disconnect()
           })
         })
       } else if (args.cmd === 'status') {
         pm2.list((err, list) => {
-          const res = list.filter((item) => (item.name === 'rest' ? true : false))
-          const logger = new Logger('rest')
+          const res = list.filter((item) => (item.name === label ? true : false))
           if (res[0].pm2_env?.status?.toString() !== 'online') {
-            logger.info('REST server is stopped.')
+            logger.info(`${label} server is stopped.`)
           } else {
-            logger.info('REST server is started.')
+            logger.info(`${label} server is started.`)
           }
           return pm2.disconnect()
         })
