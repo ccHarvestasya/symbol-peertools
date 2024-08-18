@@ -170,6 +170,5 @@ export class NodeWatch {
     }
 
     this.logger.info('=== e n d watcher ===')
-    this.logger.shutdown(0)
   }
 }
