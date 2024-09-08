@@ -1,7 +1,7 @@
 {
   "name": "symbol-peertools",
   "description": "Symbol Peer Tools",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "author": "ccHarvestasya",
   "bin": "./bin/run.js",
   "bugs": "https://github.com/ccHarvestasya/symbol-peertools/issues",

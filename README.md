@@ -18,7 +18,7 @@ $ npm install -g symbol-peertools
 $ symbol-peertools COMMAND
 running command...
 $ symbol-peertools (--version)
-symbol-peertools/1.0.4 win32-x64 node-v20.16.0
+symbol-peertools/1.0.5 win32-x64 node-v20.16.0
 $ symbol-peertools --help [COMMAND]
 USAGE
   $ symbol-peertools COMMAND
@@ -66,7 +66,7 @@ EXAMPLES
   $ symbol-peertools certGen --caname "Test CA" --nodename "Test Node"
 ```
 
-_See code: [src/commands/certGen/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.4/src/commands/certGen/index.ts)_
+_See code: [src/commands/certGen/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.5/src/commands/certGen/index.ts)_
 
 ## `symbol-peertools certInfo`
 
@@ -74,10 +74,11 @@ Display Symbol node certificate information.
 
 ```
 USAGE
-  $ symbol-peertools certInfo [--certdir <value>]
+  $ symbol-peertools certInfo [--certdir <value>] [-n <value>]
 
 FLAGS
-  --certdir=<value>  [default: ./cert] Certificate directory
+  -n, --networkId=<value>  [default: mainnet] network ID(mainnet/testnet/any number)
+      --certdir=<value>    [default: ./cert] Certificate directory
 
 DESCRIPTION
   Display Symbol node certificate information.
@@ -86,7 +87,7 @@ EXAMPLES
   $ symbol-peertools certInfo
 ```
 
-_See code: [src/commands/certInfo/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.4/src/commands/certInfo/index.ts)_
+_See code: [src/commands/certInfo/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.5/src/commands/certInfo/index.ts)_
 
 ## `symbol-peertools certRenew`
 
@@ -110,7 +111,7 @@ EXAMPLES
   $ symbol-peertools certRenew
 ```
 
-_See code: [src/commands/certRenew/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.4/src/commands/certRenew/index.ts)_
+_See code: [src/commands/certRenew/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.5/src/commands/certRenew/index.ts)_
 
 ## `symbol-peertools chainInfo`
 
@@ -132,7 +133,7 @@ EXAMPLES
   $ symbol-peertools chainInfo
 ```
 
-_See code: [src/commands/chainInfo/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.4/src/commands/chainInfo/index.ts)_
+_See code: [src/commands/chainInfo/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.5/src/commands/chainInfo/index.ts)_
 
 ## `symbol-peertools help [COMMAND]`
 
@@ -174,7 +175,7 @@ EXAMPLES
   $ symbol-peertools nodeDiagnosticCounters
 ```
 
-_See code: [src/commands/nodeDiagnosticCounters/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.4/src/commands/nodeDiagnosticCounters/index.ts)_
+_See code: [src/commands/nodeDiagnosticCounters/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.5/src/commands/nodeDiagnosticCounters/index.ts)_
 
 ## `symbol-peertools nodeInfo`
 
@@ -196,7 +197,7 @@ EXAMPLES
   $ symbol-peertools nodeInfo
 ```
 
-_See code: [src/commands/nodeInfo/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.4/src/commands/nodeInfo/index.ts)_
+_See code: [src/commands/nodeInfo/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.5/src/commands/nodeInfo/index.ts)_
 
 ## `symbol-peertools nodePeers`
 
@@ -218,7 +219,7 @@ EXAMPLES
   $ symbol-peertools nodePeers
 ```
 
-_See code: [src/commands/nodePeers/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.4/src/commands/nodePeers/index.ts)_
+_See code: [src/commands/nodePeers/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.5/src/commands/nodePeers/index.ts)_
 
 ## `symbol-peertools nodeTime`
 
@@ -240,7 +241,7 @@ EXAMPLES
   $ symbol-peertools nodeTime
 ```
 
-_See code: [src/commands/nodeTime/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.4/src/commands/nodeTime/index.ts)_
+_See code: [src/commands/nodeTime/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.5/src/commands/nodeTime/index.ts)_
 
 ## `symbol-peertools nodeUnlockedAccount`
 
@@ -262,7 +263,7 @@ EXAMPLES
   $ symbol-peertools nodeUnlockedAccount
 ```
 
-_See code: [src/commands/nodeUnlockedAccount/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.4/src/commands/nodeUnlockedAccount/index.ts)_
+_See code: [src/commands/nodeUnlockedAccount/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.5/src/commands/nodeUnlockedAccount/index.ts)_
 
 ## `symbol-peertools rest CMD`
 
@@ -289,7 +290,7 @@ EXAMPLES
   $ symbol-peertools rest stop
 ```
 
-_See code: [src/commands/rest/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.4/src/commands/rest/index.ts)_
+_See code: [src/commands/rest/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.5/src/commands/rest/index.ts)_
 
 ## `symbol-peertools watcher CMD`
 
@@ -314,7 +315,7 @@ EXAMPLES
   $ symbol-peertools watcher stop
 ```
 
-_See code: [src/commands/watcher/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.4/src/commands/watcher/index.ts)_
+_See code: [src/commands/watcher/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.5/src/commands/watcher/index.ts)_
 
 ## `symbol-peertools wizard`
 
@@ -334,5 +335,5 @@ EXAMPLES
   $ symbol-peertools wizard wizard
 ```
 
-_See code: [src/commands/wizard/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.4/src/commands/wizard/index.ts)_
+_See code: [src/commands/wizard/index.ts](https://github.com/ccHarvestasya/symbol-peertools/blob/v1.0.5/src/commands/wizard/index.ts)_
 <!-- commandsstop -->
